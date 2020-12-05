@@ -20,11 +20,23 @@ def browse_button():
         startButton = Button(root, text="Start", command=button_start, pady=8, fg="white", bg="black").pack()           #Start Button
 
 def button_start():
+    k = 1
     x = root.filename
     top = Toplevel()
     make_sure_path_exists(os.path.abspath(os.path.dirname(__file__)) + "\\PV")
-    shutil.copy(x , os.path.abspath(os.path.dirname(__file__)) + "\\PV\\" + e.get() + ".mp4")          #copies the selected file (as we wish)
-    #The processing of the Video
+    while True:
+        if e.get() != "":
+            shutil.copy(x , os.path.abspath(os.path.dirname(__file__)) + "\\PV\\" + e.get() + ".mp4")          #copies the selected file (as we wish)
+            break
+        elif not os.path.isfile(os.path.abspath(os.path.dirname(__file__)) + "\\PV\\" + str(k) + ".mp4"):
+            shutil.copy(x , os.path.abspath(os.path.dirname(__file__)) + "\\PV\\" + str(k) + ".mp4")
+            break
+        else:
+            k = k + 1
+            continue
+        
+    #---The processing of the Video---
+
     my_label2 = Label(top, text="Your processed video is in the PVs folder.").pack()
     btn = Button(top, text="Close", command=top.destroy).pack()         #Close Button (after clicking Start Button)
 
