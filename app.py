@@ -40,7 +40,7 @@ def main():
         possible_plates = []
         for p in plates_to_check:
             text = pytesseract.image_to_string(p.imgPlate)
-            if text.isalnum():
+            if len(text) > 3:
                 possible_plates.append(text)
 
         if len(possible_plates):
