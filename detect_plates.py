@@ -4,8 +4,8 @@ import math
 import app
 import random
 
-import Preprocess
-import DetectChars
+import preprocess
+import detect_chars
 import PossiblePlate
 import PossibleChar
 
@@ -26,7 +26,7 @@ def detectPlatesInScene(img_original_scene):
     if app.showSteps:  # show steps
         cv2.imshow("0", img_original_scene)
 
-    img_grayscale_scene, img_thresh_scene = Preprocess.preprocess(
+    img_grayscale_scene, img_thresh_scene = preprocess.preprocess(
         img_original_scene)  # preprocess to get grayscale and threshold images
 
     if app.showSteps:  # show steps
@@ -54,7 +54,7 @@ def detectPlatesInScene(img_original_scene):
 
     # given a list of all possible chars, find groups of matching chars
     # in the next steps each group of matching chars will attempt to be recognized as a plate
-    list_of_lists_of_matching_chars_in_scene = DetectChars.find_list_of_lists_of_matching_chars(
+    list_of_lists_of_matching_chars_in_scene = detect_chars.find_list_of_lists_of_matching_chars(
         list_of_possible_chars_in_scene)
 
     if app.showSteps:  # show steps
@@ -130,7 +130,7 @@ def findPossibleCharsInScene(imgThresh):
 
         possible_char = PossibleChar.PossibleChar(contours[i])
 
-        if DetectChars.checkIfPossibleChar(
+        if detect_chars.checkIfPossibleChar(
                 possible_char):  # if contour is a possible char, note this does not compare to other chars
             int_count_of_possible_chars = int_count_of_possible_chars + 1  # increment count of possible chars
             list_of_possible_chars.append(possible_char)  # and add to list of possible chars
@@ -176,8 +176,8 @@ def extractPlate(img_original, list_of_matching_chars):
     # calculate correction angle of plate region
     flt_opposite = list_of_matching_chars[len(list_of_matching_chars) - 1].intCenterY - list_of_matching_chars[
         0].intCenterY
-    flt_hypotenuse = DetectChars.distanceBetweenChars(list_of_matching_chars[0],
-                                                      list_of_matching_chars[len(list_of_matching_chars) - 1])
+    flt_hypotenuse = detect_chars.distanceBetweenChars(list_of_matching_chars[0],
+                                                       list_of_matching_chars[len(list_of_matching_chars) - 1])
     flt_correction_angle_in_rad = math.asin(flt_opposite / flt_hypotenuse)
     flt_correction_angle_in_deg = flt_correction_angle_in_rad * (180.0 / math.pi)
 

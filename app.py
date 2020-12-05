@@ -1,8 +1,8 @@
 import cv2
 import os
 
-import DetectChars
-import DetectPlates
+import detect_chars
+import detect_plates
 
 SCALAR_BLACK = (0.0, 0.0, 0.0)
 SCALAR_WHITE = (255.0, 255.0, 255.0)
@@ -13,7 +13,7 @@ SCALAR_RED = (0.0, 0.0, 255.0)
 showSteps = False
 
 def main():
-    bln_knn_training_successful = DetectChars.loadKNNDataAndTrainKNN()  # attempt KNN training
+    bln_knn_training_successful = detect_chars.loadKNNDataAndTrainKNN()  # attempt KNN training
 
     if bln_knn_training_successful == False:
         print("\nerror: KNN traning was not successful\n")
@@ -26,9 +26,9 @@ def main():
         os.system("pause")
         return
 
-    list_of_possible_plates = DetectPlates.detectPlatesInScene(img_original_scene) # detect plates
+    list_of_possible_plates = detect_plates.detectPlatesInScene(img_original_scene) # detect plates
 
-    list_of_possible_plates = DetectChars.detect_chars_in_plates(list_of_possible_plates) # detect chars in plates
+    list_of_possible_plates = detect_chars.detect_chars_in_plates(list_of_possible_plates) # detect chars in plates
 
     cv2.imshow("img_original_scene", img_original_scene)
 

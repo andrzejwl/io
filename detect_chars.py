@@ -6,7 +6,7 @@ import math
 import random
 
 import app
-import Preprocess
+import preprocess
 import PossibleChar
 
 kNearest = cv2.ml.KNearest_create()
@@ -80,7 +80,7 @@ def detect_chars_in_plates(list_of_possible_plates):
     for possible_plate in list_of_possible_plates:  # for each possible plate, this is a big for
         # loop that takes up most of the function
 
-        possible_plate.imgGrayscale, possible_plate.imgThresh = Preprocess.preprocess(
+        possible_plate.imgGrayscale, possible_plate.imgThresh = preprocess.preprocess(
             possible_plate.imgPlate)  # preprocess to get grayscale and threshold images
 
         if app.showSteps:
