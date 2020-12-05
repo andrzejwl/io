@@ -83,7 +83,7 @@ def detectPlatesInScene(img_original_scene):
         if possible_plate.imgPlate is not None:  # if plate was found
             list_of_possible_plates.append(possible_plate)  # add to list of possible plates
 
-    print("\n" + str(len(list_of_possible_plates)) + " possible plates found")
+    # print("\n" + str(len(list_of_possible_plates)) + " possible plates found")
 
     if app.showSteps:
         print("\n")
