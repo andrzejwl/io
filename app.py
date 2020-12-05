@@ -21,7 +21,7 @@ def main():
         return
 
     #img_original_scene  = cv2.imread("resources/1.png")
-    vidcap = cv2.VideoCapture('resources/grupaA1.mp4')
+    vidcap = cv2.VideoCapture('resources/grupaA3.mp4')
     success, img_original_scene = vidcap.read()
 
     while success:
