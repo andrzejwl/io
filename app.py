@@ -19,48 +19,52 @@ def main():
         print("\nerror: KNN traning was not successful\n")
         return
 
-    img_original_scene  = cv2.imread("resources/1.png")
+    #img_original_scene  = cv2.imread("resources/1.png")
+    vidcap = cv2.VideoCapture('resources/grupaA1.mp4')
+    success, img_original_scene = vidcap.read()
 
-    if img_original_scene is None:
-        print("\nerror: image not read from file \n\n")
-        os.system("pause")
-        return
-
-    list_of_possible_plates = detect_plates.detectPlatesInScene(img_original_scene) # detect plates
-
-    list_of_possible_plates = detect_chars.detect_chars_in_plates(list_of_possible_plates) # detect chars in plates
-
-    cv2.imshow("img_original_scene", img_original_scene)
-
-    if len(list_of_possible_plates) == 0:
-        print("\nno license plates were detected\n")
-    else:
-        # if we get in here list of possible plates has at least one plate
-        # sort the list of possible plates in DESCENDING order (most number of chars to least number of chars)
-        list_of_possible_plates.sort(key = lambda possible_plate: len(possible_plate.strChars), reverse = True)
-
-        # suppose the plate with the most recognized chars (the first plate in sorted by string length descending order) is the actual plate
-        lic_plate = list_of_possible_plates[0]
-
-        cv2.imshow("imgPlate", lic_plate.imgPlate)  # show crop of plate and threshold of plate
-        cv2.imshow("imgThresh", lic_plate.imgThresh)
-
-        if len(lic_plate.strChars) == 0:
-            print("\nno characters were detected\n\n")
+    while success:
+        if img_original_scene is None:
+            print("\nerror: image not read from file \n\n")
+            os.system("pause")
             return
 
-        drawRedRectangleAroundPlate(img_original_scene, lic_plate)
+        list_of_possible_plates = detect_plates.detectPlatesInScene(img_original_scene) # detect plates
 
-        print("\nlicense plate read from image = " + lic_plate.strChars + "\n")
-        print("----------------------------------------")
+        list_of_possible_plates = detect_chars.detect_chars_in_plates(list_of_possible_plates) # detect chars in plates
 
-        writeLicensePlateCharsOnImage(img_original_scene, lic_plate)
+        # cv2.imshow("img_original_scene", img_original_scene)
 
-        cv2.imshow("img_original_scene", img_original_scene)
+        if len(list_of_possible_plates) == 0:
+            print("\nno license plates were detected\n")
+        else:
+            # if we get in here list of possible plates has at least one plate
+            # sort the list of possible plates in DESCENDING order (most number of chars to least number of chars)
+            list_of_possible_plates.sort(key = lambda possible_plate: len(possible_plate.strChars), reverse = True)
 
-        cv2.imwrite("img_original_scene.png", img_original_scene)
+            # suppose the plate with the most recognized chars (the first plate in sorted by string length descending order) is the actual plate
+            lic_plate = list_of_possible_plates[0]
 
-    cv2.waitKey(0)
+            # cv2.imshow("imgPlate", lic_plate.imgPlate)  # show crop of plate and threshold of plate
+            # cv2.imshow("imgThresh", lic_plate.imgThresh)
+
+            if len(lic_plate.strChars) == 0:
+                print("\nno characters were detected\n\n")
+                return
+
+            drawRedRectangleAroundPlate(img_original_scene, lic_plate)
+
+            print("\nlicense plate read from image = " + lic_plate.strChars + "\n")
+            print("----------------------------------------")
+
+            writeLicensePlateCharsOnImage(img_original_scene, lic_plate)
+
+            success, img_original_scene = vidcap.read()
+            # cv2.imshow("img_original_scene", img_original_scene)
+
+            # cv2.imwrite("img_original_scene.png", img_original_scene)
+
+    #cv2.waitKey(0)
 
     return
 
