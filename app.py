@@ -15,10 +15,11 @@ SCALAR_RED = (0.0, 0.0, 255.0)
 
 showSteps = False
 
+
 def main():
     bln_knn_training_successful = detect_chars.loadKNNDataAndTrainKNN()  # attempt KNN training
 
-    if bln_knn_training_successful == False:
+    if not bln_knn_training_successful:
         print("\nerror: KNN traning was not successful\n")
         return
 
@@ -135,21 +136,3 @@ def writeLicensePlateCharsOnImage(imgOriginalScene, licPlate):
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
