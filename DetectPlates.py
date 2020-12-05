@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import math
-import Main
+import app
 import random
 
 import Preprocess
@@ -23,13 +23,13 @@ def detectPlatesInScene(img_original_scene):
 
     cv2.destroyAllWindows()
 
-    if Main.showSteps:  # show steps
+    if app.showSteps:  # show steps
         cv2.imshow("0", img_original_scene)
 
     img_grayscale_scene, img_thresh_scene = Preprocess.preprocess(
         img_original_scene)  # preprocess to get grayscale and threshold images
 
-    if Main.showSteps:  # show steps
+    if app.showSteps:  # show steps
         cv2.imshow("1a", img_grayscale_scene)
         cv2.imshow("1b", img_thresh_scene)
 
@@ -38,7 +38,7 @@ def detectPlatesInScene(img_original_scene):
     # contours that could be chars (without comparison to other chars yet)
     list_of_possible_chars_in_scene = findPossibleCharsInScene(img_thresh_scene)
 
-    if Main.showSteps:  # show steps
+    if app.showSteps:  # show steps
         print("step 2 - len(list_of_possible_chars_in_scene) = " + str(
             len(list_of_possible_chars_in_scene)))  # 131 with MCLRNF1 image
 
@@ -49,7 +49,7 @@ def detectPlatesInScene(img_original_scene):
         for possibleChar in list_of_possible_chars_in_scene:
             contours.append(possibleChar.contour)
 
-        cv2.drawContours(img_contours, contours, -1, Main.SCALAR_WHITE)
+        cv2.drawContours(img_contours, contours, -1, app.SCALAR_WHITE)
         cv2.imshow("2b", img_contours)
 
     # given a list of all possible chars, find groups of matching chars
@@ -57,7 +57,7 @@ def detectPlatesInScene(img_original_scene):
     list_of_lists_of_matching_chars_in_scene = DetectChars.find_list_of_lists_of_matching_chars(
         list_of_possible_chars_in_scene)
 
-    if Main.showSteps:  # show steps
+    if app.showSteps:  # show steps
         print("step 3 - list_of_lists_of_matching_chars_in_scene.Count = " + str(
             len(list_of_lists_of_matching_chars_in_scene)))
 
@@ -85,17 +85,17 @@ def detectPlatesInScene(img_original_scene):
 
     print("\n" + str(len(list_of_possible_plates)) + " possible plates found")
 
-    if Main.showSteps:
+    if app.showSteps:
         print("\n")
         cv2.imshow("4a", img_contours)
 
         for i in range(0, len(list_of_possible_plates)):
             p2f_rect_points = cv2.boxPoints(list_of_possible_plates[i].rrLocationOfPlateInScene)
 
-            cv2.line(img_contours, tuple(p2f_rect_points[0]), tuple(p2f_rect_points[1]), Main.SCALAR_RED, 2)
-            cv2.line(img_contours, tuple(p2f_rect_points[1]), tuple(p2f_rect_points[2]), Main.SCALAR_RED, 2)
-            cv2.line(img_contours, tuple(p2f_rect_points[2]), tuple(p2f_rect_points[3]), Main.SCALAR_RED, 2)
-            cv2.line(img_contours, tuple(p2f_rect_points[3]), tuple(p2f_rect_points[0]), Main.SCALAR_RED, 2)
+            cv2.line(img_contours, tuple(p2f_rect_points[0]), tuple(p2f_rect_points[1]), app.SCALAR_RED, 2)
+            cv2.line(img_contours, tuple(p2f_rect_points[1]), tuple(p2f_rect_points[2]), app.SCALAR_RED, 2)
+            cv2.line(img_contours, tuple(p2f_rect_points[2]), tuple(p2f_rect_points[3]), app.SCALAR_RED, 2)
+            cv2.line(img_contours, tuple(p2f_rect_points[3]), tuple(p2f_rect_points[0]), app.SCALAR_RED, 2)
 
             cv2.imshow("4a", img_contours)
 
@@ -125,8 +125,8 @@ def findPossibleCharsInScene(imgThresh):
 
     for i in range(0, len(contours)):  # for each contour
 
-        if Main.showSteps:
-            cv2.drawContours(img_contours, contours, i, Main.SCALAR_WHITE)
+        if app.showSteps:
+            cv2.drawContours(img_contours, contours, i, app.SCALAR_WHITE)
 
         possible_char = PossibleChar.PossibleChar(contours[i])
 
@@ -135,7 +135,7 @@ def findPossibleCharsInScene(imgThresh):
             int_count_of_possible_chars = int_count_of_possible_chars + 1  # increment count of possible chars
             list_of_possible_chars.append(possible_char)  # and add to list of possible chars
 
-    if Main.showSteps:
+    if app.showSteps:
         print("\nstep 2 - len(contours) = " + str(len(contours)))
         print("step 2 - int_count_of_possible_chars = " + str(int_count_of_possible_chars))
         cv2.imshow("2a", img_contours)
