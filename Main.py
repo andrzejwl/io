@@ -28,7 +28,7 @@ def main():
 
     list_of_possible_plates = DetectPlates.detectPlatesInScene(img_original_scene) # detect plates
 
-    list_of_possible_plates = DetectChars.detectCharsInPlates(list_of_possible_plates) # detect chars in plates
+    list_of_possible_plates = DetectChars.detect_chars_in_plates(list_of_possible_plates) # detect chars in plates
 
     cv2.imshow("img_original_scene", img_original_scene)
 

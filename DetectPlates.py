@@ -54,7 +54,7 @@ def detectPlatesInScene(img_original_scene):
 
     # given a list of all possible chars, find groups of matching chars
     # in the next steps each group of matching chars will attempt to be recognized as a plate
-    list_of_lists_of_matching_chars_in_scene = DetectChars.findListOfListsOfMatchingChars(
+    list_of_lists_of_matching_chars_in_scene = DetectChars.find_list_of_lists_of_matching_chars(
         list_of_possible_chars_in_scene)
 
     if Main.showSteps:  # show steps
