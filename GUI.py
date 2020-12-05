@@ -19,14 +19,18 @@ def button_start():
     btn = Button(top, text="Close", command=top.destroy).pack()
 
 # Main
-root = Tk()
-root.title('License Plate Recognition')
-myLabel1 = Label(root, text="Welcome to the License Plate Recognition Program!").pack()
+def main():
+    root = Tk()
+    root.title('License Plate Recognition')
+    myLabel1 = Label(root, text="Welcome to the License Plate Recognition Program!").pack()
 
-my_img = ImageTk.PhotoImage(Image.open("C:/Users/krzys/Desktop/1.jpg"))
-my_label = Label(image=my_img).pack()
+    my_img = ImageTk.PhotoImage(Image.open(os.path.abspath(os.path.dirname(__file__)) + "\\resources\\1.jpg"))
+    my_label = Label(image=my_img).pack()
 
-uploadButton = Button(root, text="Browse a video", command=browse_button, pady=3, fg="white", bg="blue")
-uploadButton.pack()
+    uploadButton = Button(root, text="Browse a video", command=browse_button, pady=3, fg="white", bg="blue")
+    uploadButton.pack()
 
-root.mainloop()
+    root.mainloop()
+
+if __name__ == "__main__":
+    main()
