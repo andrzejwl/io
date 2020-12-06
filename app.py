@@ -17,7 +17,7 @@ SCALAR_RED = (0.0, 0.0, 255.0)
 showSteps = False
 
 
-def main():
+def main(input_file_path):
     bln_knn_training_successful = detect_chars.loadKNNDataAndTrainKNN()  # attempt KNN training
 
     if not bln_knn_training_successful:
@@ -25,7 +25,7 @@ def main():
         return
 
     # img_original_scene  = cv2.imread("resources/1.png")
-    vidcap = cv2.VideoCapture('resources/grupaA3.mp4')
+    vidcap = cv2.VideoCapture(input_file_path)
     success, img_original_scene = vidcap.read()
 
     detected_plates_txt = []
