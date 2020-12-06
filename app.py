@@ -49,7 +49,7 @@ def main():
             for p in plates_to_check:
                 text = pytesseract.image_to_string(p.imgPlate)
                 if 5 < len(text) < 8:
-                    possible_plates.append(''.join(ch for ch in text if ch.isalnum()) + " in second :" + second_of_recording)
+                    possible_plates.append("\"" + ''.join(ch for ch in text if ch.isalnum()) + "\" in second: " + str(second_of_recording))
 
             if len(possible_plates):
                 for plate in possible_plates:
