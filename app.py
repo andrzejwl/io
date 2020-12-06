@@ -6,7 +6,7 @@ import detect_chars
 import detect_plates
 import pytesseract
 
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files (x86)\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 SCALAR_BLACK = (0.0, 0.0, 0.0)
 SCALAR_WHITE = (255.0, 255.0, 255.0)
@@ -55,41 +55,6 @@ def main():
 
             success, img_original_scene = vidcap.read()
         counter = counter + 1
-        # OLD DETECTION METHOD
-        # list_of_possible_plates = detect_chars.detect_chars_in_plates(list_of_possible_plates) # detect chars in plates
-
-        # cv2.imshow("img_original_scene", img_original_scene)
-
-        # if len(list_of_possible_plates) == 0:
-        #     print("\nno license plates were detected\n")
-        # else:
-        #     # if we get in here list of possible plates has at least one plate
-        #     # sort the list of possible plates in DESCENDING order (most number of chars to least number of chars)
-        #     list_of_possible_plates.sort(key = lambda possible_plate: len(possible_plate.strChars), reverse = True)
-        #
-        #     # suppose the plate with the most recognized chars (the first plate in sorted by string length descending order) is the actual plate
-        #     lic_plate = list_of_possible_plates[0]
-        #
-        #     # cv2.imshow("imgPlate", lic_plate.imgPlate)  # show crop of plate and threshold of plate
-        #     # cv2.imshow("imgThresh", lic_plate.imgThresh)
-        #
-        #     if len(lic_plate.strChars) == 0:
-        #         print("\nno characters were detected\n\n")
-        #         return
-        #
-        #     drawRedRectangleAroundPlate(img_original_scene, lic_plate)
-        #
-        #     print("\nlicense plate read from image = " + lic_plate.strChars + "\n")
-        #     print("----------------------------------------")
-        #
-        #     writeLicensePlateCharsOnImage(img_original_scene, lic_plate)
-
-        # success, img_original_scene = vidcap.read()
-        # cv2.imshow("img_original_scene", img_original_scene)
-
-        # cv2.imwrite("img_original_scene.png", img_original_scene)
-
-    # cv2.waitKey(0)
 
     try:
         f = io.open("license_plates.txt", "x", encoding="utf-8")
