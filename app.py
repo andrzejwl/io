@@ -25,7 +25,7 @@ def main():
         return
 
     # img_original_scene  = cv2.imread("resources/1.png")
-    vidcap = cv2.VideoCapture('resources/grupaA1.mp4')
+    vidcap = cv2.VideoCapture('resources/grupaA3.mp4')
     success, img_original_scene = vidcap.read()
 
     detected_plates_txt = []
@@ -45,8 +45,8 @@ def main():
             possible_plates = []
             for p in plates_to_check:
                 text = pytesseract.image_to_string(p.imgPlate)
-                if len(text) > 5:
-                    possible_plates.append(text)
+                if 5 < len(text) < 8:
+                    possible_plates.append(''.join(ch for ch in text if ch.isalnum()))
 
             if len(possible_plates):
                 for plate in possible_plates:
