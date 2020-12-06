@@ -1,6 +1,7 @@
 import cv2
 import os
 import io
+import math
 
 import detect_chars
 import detect_plates
@@ -25,17 +26,18 @@ def main():
         return
 
     # img_original_scene  = cv2.imread("resources/1.png")
-    vidcap = cv2.VideoCapture('resources/grupaA3.mp4')
+    vidcap = cv2.VideoCapture('resources/grupaA1.mp4')
     success, img_original_scene = vidcap.read()
 
     detected_plates_txt = []
 
     second_of_recording = 0
+    frame = 0
     counter = 0
     while success:
+        frame = frame + 1
         if counter % 10 == 0:
-            if counter % 30 == 0:
-                second_of_recording = second_of_recording + 1
+            second_of_recording = math.floor(frame / 270)
             if img_original_scene is None:
                 print("\nerror: image not read from file \n\n")
                 os.system("pause")
