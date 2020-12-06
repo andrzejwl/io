@@ -4,6 +4,7 @@ from tkinter import messagebox, filedialog
 import os.path
 import errno
 import shutil
+import app
 
 root = Tk()         #root window
 e = Entry(root, width=35, borderwidth=5)
@@ -11,7 +12,7 @@ root.resizable(False, False)            #disable resizing of root window
 
 # Functions
 def browse_button():
-    root.filename = filedialog.askopenfilename(initialdir="/", title="Select a video", filetypes=(("mp4 files", "*.mp4"),("avi files", "*.avi")))           #selected video (file)
+    root.filename = filedialog.askopenfilename(initialdir=".", title="Select a video", filetypes=(("mp4 files", "*.mp4"),("avi files", "*.avi")))           #selected video (file)
 
     if os.path.exists(root.filename):           #if the video (file) exists
         browse_label = Label(root, text=root.filename + '\n').pack()            #path of the selected video (file)
@@ -24,8 +25,10 @@ def button_start():
     x = root.filename
     top = Toplevel()
     make_sure_path_exists(os.path.abspath(os.path.dirname(__file__)) + "\\PV")
+    input_file = None
     while True:
         if e.get() != "":
+            input_file = e.get()
             shutil.copy(x , os.path.abspath(os.path.dirname(__file__)) + "\\PV\\" + e.get() + ".mp4")          #copies the selected file (as we wish)
             break
         elif not os.path.isfile(os.path.abspath(os.path.dirname(__file__)) + "\\PV\\" + str(k) + ".mp4"):
@@ -38,6 +41,7 @@ def button_start():
     #---The processing of the Video---
 
     my_label2 = Label(top, text="Your processed video is in the PVs folder.").pack()
+    print(input_file)
     btn = Button(top, text="Close", command=top.destroy).pack()         #Close Button (after clicking Start Button)
 
 def make_sure_path_exists(path):            #checks if path (folder/file) exists, if not then it will be created
