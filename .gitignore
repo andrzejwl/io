@@ -8,6 +8,8 @@ __pycache__/
 /resources
 # Distribution / packaging
 .Python
+
+./PV
 build/
 develop-eggs/
 dist/
