@@ -2,12 +2,13 @@ import cv2
 import os
 import io
 import math
+from datetime import datetime
 
 import detect_chars
 import detect_plates
 import pytesseract
 
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files (x86)\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 SCALAR_BLACK = (0.0, 0.0, 0.0)
 SCALAR_WHITE = (255.0, 255.0, 255.0)
@@ -27,6 +28,7 @@ def main(input_file_path):
 
     # img_original_scene  = cv2.imread("resources/1.png")
     vidcap = cv2.VideoCapture(input_file_path)
+    output_video = cv2.VideoWriter('PV/output' + datetime.now().strftime('%D %H:%M:%S') + '.mp4', -1, 30.0, (1280,720))
     success, img_original_scene = vidcap.read()
 
     detected_plates_txt = []
@@ -57,8 +59,15 @@ def main(input_file_path):
                 for plate in possible_plates:
                     detected_plates_txt.append(plate)
                 print(possible_plates)
+                # draw the most probable frame
+                out_frame = drawRedRectangleAroundPlate(img_original_scene.copy(), plates_to_check[0])
+                output_video.write(out_frame)
+            else:
+                output_video.write(img_original_scene)
 
             success, img_original_scene = vidcap.read()
+        else:
+            output_video.write(img_original_scene)
         counter = counter + 1
 
     try:
@@ -129,4 +138,4 @@ def writeLicensePlateCharsOnImage(imgOriginalScene, licPlate):
 
 
 if __name__ == "__main__":
-    main()
+    main('resources/grupaA3.mp4')
