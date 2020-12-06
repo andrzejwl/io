@@ -6,7 +6,7 @@ import detect_chars
 import detect_plates
 import pytesseract
 
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files (x86)\Tesseract-OCR\tesseract.exe'
 
 SCALAR_BLACK = (0.0, 0.0, 0.0)
 SCALAR_WHITE = (255.0, 255.0, 255.0)
@@ -30,9 +30,12 @@ def main():
 
     detected_plates_txt = []
 
+    second_of_recording = 0
     counter = 0
     while success:
         if counter % 10 == 0:
+            if counter % 30 == 0:
+                second_of_recording = second_of_recording + 1
             if img_original_scene is None:
                 print("\nerror: image not read from file \n\n")
                 os.system("pause")
@@ -46,7 +49,7 @@ def main():
             for p in plates_to_check:
                 text = pytesseract.image_to_string(p.imgPlate)
                 if 5 < len(text) < 8:
-                    possible_plates.append(''.join(ch for ch in text if ch.isalnum()))
+                    possible_plates.append(''.join(ch for ch in text if ch.isalnum()).join(" in second :").join(second_of_recording))
 
             if len(possible_plates):
                 for plate in possible_plates:
