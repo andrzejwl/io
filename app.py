@@ -8,7 +8,11 @@ import detect_chars
 import detect_plates
 import pytesseract
 
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+# read tesseract executable location
+tesseract_file = open('tesseract.txt', 'r')
+tesseract_dir = tesseract_file.readline()
+
+pytesseract.pytesseract.tesseract_cmd = r'{}'.format(tesseract_dir)
 
 SCALAR_BLACK = (0.0, 0.0, 0.0)
 SCALAR_WHITE = (255.0, 255.0, 255.0)
