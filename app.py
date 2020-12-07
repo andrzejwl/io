@@ -40,6 +40,9 @@ def main(input_file_path):
     second_of_recording = 0
     frame = 0
     counter = 0
+
+    plate_to_draw = None  # last detected plate
+
     while success:
         frame = frame + 1
         if counter % 10 == 0:
@@ -64,14 +67,20 @@ def main(input_file_path):
                     detected_plates_txt.append(plate)
                 print(possible_plates)
                 # draw the most probable frame
-                out_frame = drawRedRectangleAroundPlate(img_original_scene.copy(), plates_to_check[0])
+
+                plate_to_draw = plates_to_check[0]
+                out_frame = drawRedRectangleAroundPlate(img_original_scene.copy(), plate_to_draw)
                 output_video.write(out_frame)
             else:
+                plate_to_draw = None
                 output_video.write(img_original_scene)
 
             success, img_original_scene = vidcap.read()
         else:
-            output_video.write(img_original_scene)
+            output_frame = img_original_scene.copy()
+            if plate_to_draw:
+                drawRedRectangleAroundPlate(output_frame, plate_to_draw)
+            output_video.write(output_frame)
         counter = counter + 1
 
     try:
