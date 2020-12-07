@@ -39,8 +39,8 @@ def button_start():
         
     #---The processing of the Video---
 
-    my_label2 = Label(top, text="Your processed video is in the PVs folder.").pack()
     app.main(input_file_path=input_file)
+    my_label2 = Label(top, text="Your processed video is in the PVs folder.").pack()
     btn = Button(top, text="Close", command=top.destroy).pack()         #Close Button (after clicking Start Button)
 
 def make_sure_path_exists(path):            #checks if path (folder/file) exists, if not then it will be created
