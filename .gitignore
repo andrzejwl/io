@@ -133,3 +133,4 @@ dmypy.json
 # custom project files
 .mp4
 tesseract.txt
+license_plates.txt
