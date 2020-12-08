@@ -25,21 +25,19 @@ def button_start():
     x = root.filename
     top = Toplevel()
     make_sure_path_exists(os.path.abspath(os.path.dirname(__file__)) + "\\PV")
-    input_file = x
     while True:
         if e.get() != "":
-            shutil.copy(x , os.path.abspath(os.path.dirname(__file__)) + "\\PV\\" + e.get() + ".mp4")          #copies the selected file (as we wish)
+            shutil.copy(x , os.path.abspath(os.path.dirname(__file__)) + "\\PV\\" + e.get() + ".mp4")         #copies the selected file (as we wish)
+            app.main(input_file_path= (os.path.abspath(os.path.dirname(__file__)) + "\\PV\\" + e.get() + ".mp4"))
             break
         elif not os.path.isfile(os.path.abspath(os.path.dirname(__file__)) + "\\PV\\" + str(k) + ".mp4"):
             shutil.copy(x , os.path.abspath(os.path.dirname(__file__)) + "\\PV\\" + str(k) + ".mp4")
+            app.main(input_file_path=(os.path.abspath(os.path.dirname(__file__)) + "\\PV\\" + str(k) + ".mp4"))
             break
         else:
             k = k + 1
             continue
-        
-    #---The processing of the Video---
 
-    app.main(input_file_path=input_file)
     my_label2 = Label(top, text="Your processed video is in the PVs folder.").pack()
     btn = Button(top, text="Close", command=top.destroy).pack()         #Close Button (after clicking Start Button)
 
