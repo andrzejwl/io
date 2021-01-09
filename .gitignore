@@ -1,0 +1,12 @@
+*.mp4
+*.avi
+build
+*.weights
+checkpoints/*
+detected_plates-*
+__pycache__
+env
+detection.zip
+.jpg
+.png
+dist

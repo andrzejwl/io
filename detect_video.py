@@ -7,7 +7,7 @@ physical_devices = tf.config.experimental.list_physical_devices('GPU')
 if len(physical_devices) > 0:
     tf.config.experimental.set_memory_growth(physical_devices[0], True)
 from absl import app, flags, logging
-from absl.flags import FLAGS
+# from absl.flags import FLAGS
 import core.utils as utils
 from core.yolov4 import filter_boxes
 from core.functions import *
@@ -35,25 +35,47 @@ flags.DEFINE_boolean('info', False, 'print info on detections')
 flags.DEFINE_boolean('crop', False, 'crop detections from images')
 flags.DEFINE_boolean('plate', False, 'perform license plate recognition')
 
-def main(_argv):
+def main(input_path):
+    FILE_TIMESTAMP = time.time()
+    default_params = {
+        'weights': './checkpoints/custom-416',
+        'size': 416,
+        'model': 'yolov4',
+        'video': input_path,
+        'output': f'./PV/output-{FILE_TIMESTAMP}.avi',
+        'framework': 'tf',
+        'tiny': False,
+        'output_format': 'XVID',
+        'iou': 0.45,
+        'score': 0.5,
+        'count': False,
+        'dont_show': False,
+        'info': False,
+        'crop': False,
+        'plate': True,
+    }
+
     config = ConfigProto()
     config.gpu_options.allow_growth = True
     session = InteractiveSession(config=config)
-    STRIDES, ANCHORS, NUM_CLASS, XYSCALE = utils.load_config(FLAGS)
-    input_size = FLAGS.size
-    video_path = FLAGS.video
+    # STRIDES, ANCHORS, NUM_CLASS, XYSCALE = utils.load_config(FLAGS)
+    # input_size = FLAGS.size
+    input_size = default_params['size']
+    # video_path = FLAGS.video
+    video_path = default_params['video']
     # get video name by using split method
     video_name = video_path.split('/')[-1]
     video_name = video_name.split('.')[0]
-    if FLAGS.framework == 'tflite':
-        interpreter = tf.lite.Interpreter(model_path=FLAGS.weights)
+    if default_params['framework'] == 'tflite':
+        # interpreter = tf.lite.Interpreter(model_path=FLAGS.weights)
+        interpreter = tf.lite.Interpreter(model_path=default_params['weights'])
         interpreter.allocate_tensors()
         input_details = interpreter.get_input_details()
         output_details = interpreter.get_output_details()
         print(input_details)
         print(output_details)
     else:
-        saved_model_loaded = tf.saved_model.load(FLAGS.weights, tags=[tag_constants.SERVING])
+        saved_model_loaded = tf.saved_model.load(default_params['weights'], tags=[tag_constants.SERVING])
         infer = saved_model_loaded.signatures['serving_default']
 
     # begin video capture
@@ -64,15 +86,18 @@ def main(_argv):
 
     out = None
 
-    if FLAGS.output:
+    if default_params['output']:
         # by default VideoCapture returns float instead of int
         width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT))
         fps = int(vid.get(cv2.CAP_PROP_FPS))
-        codec = cv2.VideoWriter_fourcc(*FLAGS.output_format)
-        out = cv2.VideoWriter(FLAGS.output, codec, fps, (width, height))
+        codec = cv2.VideoWriter_fourcc(*default_params['output_format'])
+        out = cv2.VideoWriter(default_params['output'], codec, fps, (width, height))
 
     frame_num = 0
+
+    DETECTED_PLATES = []
+
     while True:
         return_value, frame = vid.read()
         if return_value:
@@ -80,7 +105,7 @@ def main(_argv):
             frame_num += 1
             image = Image.fromarray(frame)
         else:
-            print('Video has ended or failed, try a different video format!')
+            print('Done!')
             break
     
         frame_size = frame.shape[:2]
@@ -89,11 +114,11 @@ def main(_argv):
         image_data = image_data[np.newaxis, ...].astype(np.float32)
         start_time = time.time()
 
-        if FLAGS.framework == 'tflite':
+        if default_params['framework'] == 'tflite':
             interpreter.set_tensor(input_details[0]['index'], image_data)
             interpreter.invoke()
             pred = [interpreter.get_tensor(output_details[i]['index']) for i in range(len(output_details))]
-            if FLAGS.model == 'yolov3' and FLAGS.tiny == True:
+            if FLAGS.model == 'yolov3' and default_params['tiny'] == True:
                 boxes, pred_conf = filter_boxes(pred[1], pred[0], score_threshold=0.25,
                                                 input_shape=tf.constant([input_size, input_size]))
             else:
@@ -112,8 +137,8 @@ def main(_argv):
                 pred_conf, (tf.shape(pred_conf)[0], -1, tf.shape(pred_conf)[-1])),
             max_output_size_per_class=50,
             max_total_size=50,
-            iou_threshold=FLAGS.iou,
-            score_threshold=FLAGS.score
+            iou_threshold=default_params['iou'],
+            score_threshold=default_params['score']
         )
 
         # format bounding boxes from normalized ymin, xmin, ymax, xmax ---> xmin, ymin, xmax, ymax
@@ -132,7 +157,7 @@ def main(_argv):
         #allowed_classes = ['person']
 
         # if crop flag is enabled, crop each detection and save it as new image
-        if FLAGS.crop:
+        if default_params['crop']:
             crop_rate = 150 # capture images every so many frames (ex. crop photos every 150 frames)
             crop_path = os.path.join(os.getcwd(), 'detections', 'crop', video_name)
             try:
@@ -149,32 +174,44 @@ def main(_argv):
             else:
                 pass
 
-        if FLAGS.count:
+        if default_params['count']:
             # count objects found
             counted_classes = count_objects(pred_bbox, by_class = False, allowed_classes=allowed_classes)
             # loop through dict and print
             for key, value in counted_classes.items():
                 print("Number of {}s: {}".format(key, value))
-            image = utils.draw_bbox(frame, pred_bbox, FLAGS.info, counted_classes, allowed_classes=allowed_classes, read_plate=FLAGS.plate)
+            image, detected_plate = utils.draw_bbox(frame, pred_bbox, default_params['info'], counted_classes, allowed_classes=allowed_classes, read_plate=default_params['plate'])
+            if detected_plate and detected_plate != '':
+                DETECTED_PLATES.append(f'00:{int(frame_num/30)}:00 {detected_plate}')
         else:
-            image = utils.draw_bbox(frame, pred_bbox, FLAGS.info, allowed_classes=allowed_classes, read_plate=FLAGS.plate)
+            image, detected_plate = utils.draw_bbox(frame, pred_bbox, default_params['info'], allowed_classes=allowed_classes, read_plate=True)
         
+        if detected_plate and detected_plate != '':
+                DETECTED_PLATES.append(f'00:{int(frame_num/30)}:00 {detected_plate}')
+
         fps = 1.0 / (time.time() - start_time)
         print("FPS: %.2f" % fps)
         result = np.asarray(image)
         cv2.namedWindow("result", cv2.WINDOW_AUTOSIZE)
         result = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
         
-        if not FLAGS.dont_show:
+        if not default_params['dont_show']:
             cv2.imshow("result", result)
         
-        if FLAGS.output:
+        if default_params['output']:
             out.write(result)
         if cv2.waitKey(1) & 0xFF == ord('q'): break
+    
+    plates_file = open(f'detected_plates-{FILE_TIMESTAMP}.txt', 'w+')
+    for p in DETECTED_PLATES:
+        plates_file.write(f'{p}\n')
+    plates_file.close()
+
     cv2.destroyAllWindows()
 
 if __name__ == '__main__':
     try:
-        app.run(main)
+        main(input_path='./data/video/grupaA1.mp4')
+        #app.run(main(input_path='./data/video/grupaA1.mp4'))
     except SystemExit:
         pass

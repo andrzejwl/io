@@ -8,7 +8,13 @@ from core.config import cfg
 import re
 
 # If you don't have tesseract executable in your PATH, include the following:
-# pytesseract.pytesseract.tesseract_cmd = r'<full_path_to_your_tesseract_executable>'
+
+tesseract_file = open('tesseract.txt', 'r')
+tesseract_dir = tesseract_file.readline()
+
+pytesseract.pytesseract.tesseract_cmd = r'{}'.format(tesseract_dir)
+
+# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 # Example tesseract_cmd = r'C:\Program Files (x86)\Tesseract-OCR\tesseract'
 
 # function to recognize license plate numbers using Tesseract OCR
@@ -225,6 +231,8 @@ def draw_bbox(image, bboxes, info = False, counted_classes = None, show_label=Tr
     random.shuffle(colors)
     random.seed(None)
 
+    detected_plate = None
+
     out_boxes, out_scores, out_classes, num_boxes = bboxes
     for i in range(num_boxes):
         if int(out_classes[i]) < 0 or int(out_classes[i]) > num_classes: continue
@@ -240,6 +248,7 @@ def draw_bbox(image, bboxes, info = False, counted_classes = None, show_label=Tr
                 height_ratio = int(image_h / 25)
                 plate_number = recognize_plate(image, coor)
                 if plate_number != None:
+                    detected_plate = plate_number
                     cv2.putText(image, plate_number, (int(coor[0]), int(coor[1]-height_ratio)), 
                             cv2.FONT_HERSHEY_SIMPLEX, 1.25, (255,255,0), 2)
 
@@ -267,7 +276,7 @@ def draw_bbox(image, bboxes, info = False, counted_classes = None, show_label=Tr
                     cv2.putText(image, "{}s detected: {}".format(key, value), (5, offset),
                             cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 255, 0), 2)
                     offset += height_ratio
-    return image
+    return image, detected_plate
 
 def bbox_iou(bboxes1, bboxes2):
     """

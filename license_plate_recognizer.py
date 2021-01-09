@@ -5,7 +5,11 @@ import os
 import numpy as np
 
 # If you don't have tesseract executable in your PATH, include the following:
-# pytesseract.pytesseract.tesseract_cmd = r'<full_path_to_your_tesseract_executable>'
+tesseract_file = open('tesseract.txt', 'r')
+tesseract_dir = tesseract_file.readline()
+
+pytesseract.pytesseract.tesseract_cmd = r'{}'.format(tesseract_dir)
+# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 # Example tesseract_cmd = r'C:\Program Files (x86)\Tesseract-OCR\tesseract'
 
 # point to license plate image (works well with custom crop function)
